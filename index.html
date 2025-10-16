@@ -118,7 +118,7 @@
   <div class="logo">LUNAROL</div>
   <div class="tagline">A new way to connect in the moment 🌙</div>
 
-  <form class="form-container" onsubmit="showSuccess(event)">
+  <form class="form-container">
     <input type="email" id="email" placeholder="Enter your email" required />
     <button type="submit" class="button">Join the Waitlist</button>
     <div class="success" id="success-msg">Thank you! You’re on the waitlist 🌙</div>
@@ -126,26 +126,26 @@
 
   <footer>© 2025 Lunarol. All rights reserved.</footer>
 
-  <!-- 🔥 Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"></script>
+  <!-- ✅ Firebase Connection -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  <script>
-    // ✅ Firebase Configuration (ضع هنا بياناتك من Firebase Console)
+    // ⚙️ ضع إعدادات Firebase الخاصة بك هنا:
     const firebaseConfig = {
       apiKey: "AIzaSyD8EiOL7GF9TV_z0BzY9dRxWd-NhOYje7s",
       authDomain: "lunarol.firebaseapp.com",
       projectId: "lunarol",
       storageBucket: "lunarol.firebasestorage.app",
       messagingSenderId: "389837511251",
-      appId: "1:389837511251:web:35dc8bc174e666d7cd04a6"
+      appId: "1:389837511251:web:35dc8bc174e666d7cd04a6",
     };
 
-    // ✅ Initialize Firebase
-    const app = firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
+    // 🔥 Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-    // ✅ Handle Form Submission and Save Email
+    // 📩 Handle Form Submission
     async function showSuccess(e) {
       e.preventDefault();
       const emailInput = document.getElementById('email');
@@ -155,17 +155,20 @@
       if (!email) return;
 
       try {
-        await db.collection("waitlist").add({
+        await addDoc(collection(db, "waitlist"), {
           email: email,
           timestamp: new Date()
         });
         successMsg.style.display = 'block';
         emailInput.value = '';
       } catch (error) {
-        alert("❌ Error saving email. Please try again later.");
         console.error("Firestore Error:", error);
+        alert("❌ Error saving email. Please try again later.");
       }
     }
+
+    // 🧩 Attach listener
+    document.querySelector("form").addEventListener("submit", showSuccess);
   </script>
 </body>
 </html>
