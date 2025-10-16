@@ -126,13 +126,45 @@
 
   <footer>© 2025 Lunarol. All rights reserved.</footer>
 
+  <!-- 🔥 Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"></script>
+
   <script>
-    function showSuccess(e) {
+    // ✅ Firebase Configuration (ضع هنا بياناتك من Firebase Console)
+    const firebaseConfig = {
+      apiKey: "AIzaSyD8EiOL7GF9TV_z0BzY9dRxWd-NhOYje7s",
+      authDomain: "lunarol.firebaseapp.com",
+      projectId: "lunarol",
+      storageBucket: "lunarol.firebasestorage.app",
+      messagingSenderId: "389837511251",
+      appId: "1:389837511251:web:35dc8bc174e666d7cd04a6"
+    };
+
+    // ✅ Initialize Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // ✅ Handle Form Submission and Save Email
+    async function showSuccess(e) {
       e.preventDefault();
       const emailInput = document.getElementById('email');
       const successMsg = document.getElementById('success-msg');
-      successMsg.style.display = 'block';
-      emailInput.value = '';
+      const email = emailInput.value.trim();
+
+      if (!email) return;
+
+      try {
+        await db.collection("waitlist").add({
+          email: email,
+          timestamp: new Date()
+        });
+        successMsg.style.display = 'block';
+        emailInput.value = '';
+      } catch (error) {
+        alert("❌ Error saving email. Please try again later.");
+        console.error("Firestore Error:", error);
+      }
     }
   </script>
 </body>
